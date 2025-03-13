@@ -99,23 +99,25 @@ function initWeatherMood() {
 }
 
 function getWeather(lat, lon) {
-    // For demo purposes, using a placeholder for weather data
-    // In a real application, you would use a weather API like OpenWeatherMap
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+        .then(response => response.json())
+        .then(data => {
+            const city = data.address.city || data.address.town || data.address.village || "Unknown Location";
+            fetchWeatherData(city, lat, lon);
+        })
+        .catch(error => {
+            console.error("Error retrieving city name:", error);
+            fetchWeatherData("Your Location", lat, lon);
+        });
+}
+
+function fetchWeatherData(city, lat, lon) {
+    // Replace with a real weather API call (e.g., OpenWeatherMap)
     const demoWeatherTypes = ["sunny", "rainy", "cloudy", "snowy", "partly cloudy"];
     const randomWeather = demoWeatherTypes[Math.floor(Math.random() * demoWeatherTypes.length)];
     const randomTemp = Math.floor(Math.random() * 30) + 5; // Random temperature between 5-35°C
 
-    // Simulate city name (in real app would come from reverse geocoding)
-    fetch('data/cities.json')
-        .then(response => response.json())
-        .then(data => {
-            const randomCity = data[Math.floor(Math.random() * data.length)];
-            updateWeatherUI(randomCity.name, randomWeather, randomTemp);
-        })
-        .catch(error => {
-            console.error('Error loading cities:', error);
-            updateWeatherUI("Your Location", randomWeather, randomTemp);
-        });
+    updateWeatherUI(city, randomWeather, randomTemp);
 }
 
 function loadWeatherMoodData() {
