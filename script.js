@@ -112,6 +112,51 @@ function getWeather(lat, lon) {
 }
 
 function fetchWeatherData(city, lat, lon) {
+    fetch(`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`)
+        .then(response => response.json())
+        .then(data => {
+            const timeseries = data.properties.timeseries;
+            const closestWeather = getClosestWeather(timeseries);
+            if (closestWeather) {
+                const weatherSymbol = closestWeather.data.next_1_hours?.summary?.symbol_code || "clear";
+                const temperature = closestWeather.data.instant.details.air_temperature;
+                updateWeatherUI(city, weatherSymbol, temperature);
+            } else {
+                console.error("No weather data available");
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching weather data:", error);
+        });
+}
+
+function getClosestWeather(timeseries) {
+    const now = new Date();
+    return timeseries.reduce((closest, entry) => {
+        const entryTime = new Date(entry.time);
+        return Math.abs(entryTime - now) < Math.abs(new Date(closest.time) - now) ? entry : closest;
+    }, timeseries[0]);
+}
+
+function updateWeatherUI(location, weatherSymbol, temperature) {
+    document.getElementById('current-location').textContent = location;
+    document.getElementById('current-weather').textContent = weatherSymbol.replace(/_/g, ' ');
+    document.getElementById('current-temp').textContent = `${temperature}°C`;
+
+    const weatherIcon = document.getElementById('weather-icon');
+    const iconMapping = {
+        "clear": '<i class="fas fa-sun" style="color: #FFC107;"></i>',
+        "cloudy": '<i class="fas fa-cloud" style="color: #ADB5BD;"></i>',
+        "partly_cloudy": '<i class="fas fa-cloud-sun" style="color: #6C757D;"></i>',
+        "rain": '<i class="fas fa-cloud-rain" style="color: #4A8FE7;"></i>',
+        "snow": '<i class="fas fa-snowflake" style="color: #DEE2E6;"></i>'
+    };
+
+    weatherIcon.innerHTML = iconMapping[weatherSymbol] || iconMapping["clear"];
+    updateWeatherSuggestions(weatherSymbol);
+}
+
+function fetchWeatherData(city, lat, lon) {
     // Replace with a real weather API call (e.g., OpenWeatherMap)
     const demoWeatherTypes = ["sunny", "rainy", "cloudy", "snowy", "partly cloudy"];
     const randomWeather = demoWeatherTypes[Math.floor(Math.random() * demoWeatherTypes.length)];
