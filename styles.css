@@ -367,6 +367,22 @@ footer {
 	font-size: 0.9rem;
 }
 
+.footer-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: var(--transition);
+  position: relative;
+}
+
+.footer-link:hover {
+  color: #3a7fd7;
+  text-decoration: underline;
+}
+
+footer p {
+  margin: 5px 0;
+}
+
 /* Responsive Design */
 @media (min-width: 768px) {
 
