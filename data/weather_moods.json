@@ -1,0 +1,57 @@
+[
+    {
+        "weather": "sunny",
+        "mood": "Energetic and optimistic. The sunshine is perfect for boosting your vitamin D and mood!",
+        "activities": [
+            "Go for a hike or nature walk",
+            "Have a picnic in the park",
+            "Start a garden project",
+            "Take a bike ride",
+            "Practice outdoor yoga or meditation"
+        ]
+    },
+    {
+        "weather": "rainy",
+        "mood": "Introspective and calm. The rain offers a perfect backdrop for inner reflection.",
+        "activities": [
+            "Read a good book with a cup of tea",
+            "Journal your thoughts and feelings",
+            "Cook a comforting meal",
+            "Watch an inspiring documentary",
+            "Practice indoor stretching or yoga"
+        ]
+    },
+    {
+        "weather": "cloudy",
+        "mood": "Contemplative and balanced. The soft light is perfect for creative endeavors.",
+        "activities": [
+            "Visit a museum or art gallery",
+            "Start a creative project",
+            "Organize your living space",
+            "Write letters to friends or family",
+            "Try a new recipe"
+        ]
+    },
+    {
+        "weather": "snowy",
+        "mood": "Cozy and peaceful. Embrace the quiet beauty of snow.",
+        "activities": [
+            "Build a snowman or have a snowball fight",
+            "Make hot chocolate and watch the snow fall",
+            "Work on an indoor hobby project",
+            "Take winter photographs",
+            "Practice mindfulness with the peaceful snowfall"
+        ]
+    },
+    {
+        "weather": "partly cloudy",
+        "mood": "Balanced and motivated. The changing light offers variety to your day.",
+        "activities": [
+            "Go for a refreshing walk",
+            "Work in a café or different environment",
+            "Start a new book or podcast",
+            "Practice gratitude meditation",
+            "Connect with a friend over coffee"
+        ]
+    }
+]
