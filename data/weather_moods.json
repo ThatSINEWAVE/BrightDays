@@ -1,24 +1,24 @@
 [
     {
-        "weather": "sunny",
-        "mood": "Energetic and optimistic. The sunshine is perfect for boosting your vitamin D and mood!",
+        "weather": "clear sky",
+        "mood": "Uplifted and motivated. A perfect day to soak in the sunshine and enjoy the outdoors!",
         "activities": [
-            "Go for a hike or nature walk",
-            "Have a picnic in the park",
-            "Start a garden project",
-            "Take a bike ride",
-            "Practice outdoor yoga or meditation"
+            "Go for a run or workout outside",
+            "Plan a beach or park day",
+            "Take photos of the beautiful sky",
+            "Enjoy an outdoor meal",
+            "Listen to upbeat music while walking"
         ]
     },
     {
-        "weather": "rainy",
-        "mood": "Introspective and calm. The rain offers a perfect backdrop for inner reflection.",
+        "weather": "partly cloudy",
+        "mood": "Balanced and motivated. The mix of sun and clouds brings a nice variety to your day.",
         "activities": [
-            "Read a good book with a cup of tea",
-            "Journal your thoughts and feelings",
-            "Cook a comforting meal",
-            "Watch an inspiring documentary",
-            "Practice indoor stretching or yoga"
+            "Go for a refreshing walk",
+            "Work in a café or different environment",
+            "Start a new book or podcast",
+            "Practice gratitude meditation",
+            "Connect with a friend over coffee"
         ]
     },
     {
@@ -33,7 +33,18 @@
         ]
     },
     {
-        "weather": "snowy",
+        "weather": "rain",
+        "mood": "Introspective and calm. The rain offers a perfect backdrop for inner reflection.",
+        "activities": [
+            "Read a good book with a cup of tea",
+            "Journal your thoughts and feelings",
+            "Cook a comforting meal",
+            "Watch an inspiring documentary",
+            "Practice indoor stretching or yoga"
+        ]
+    },
+    {
+        "weather": "snow",
         "mood": "Cozy and peaceful. Embrace the quiet beauty of snow.",
         "activities": [
             "Build a snowman or have a snowball fight",
@@ -44,14 +55,25 @@
         ]
     },
     {
-        "weather": "partly cloudy",
-        "mood": "Balanced and motivated. The changing light offers variety to your day.",
+        "weather": "thunderstorm",
+        "mood": "Intense and dramatic. A great time to reflect or channel your energy into something creative.",
         "activities": [
-            "Go for a refreshing walk",
-            "Work in a café or different environment",
-            "Start a new book or podcast",
-            "Practice gratitude meditation",
-            "Connect with a friend over coffee"
+            "Write or journal about your thoughts",
+            "Listen to your favorite music or a stormy soundtrack",
+            "Sketch or paint something dramatic",
+            "Plan or strategize upcoming goals",
+            "Watch a thrilling movie or show"
+        ]
+    },
+    {
+        "weather": "fog",
+        "mood": "Mystical and reflective. The fog adds a sense of mystery and calm to your surroundings.",
+        "activities": [
+            "Take moody landscape photographs",
+            "Listen to ambient or instrumental music",
+            "Write poetry or stories",
+            "Go for a slow, mindful walk",
+            "Practice deep breathing exercises"
         ]
     }
 ]
