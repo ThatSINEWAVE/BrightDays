@@ -1,0 +1,412 @@
+:root {
+	--primary-color: #4a8fe7;
+	--secondary-color: #ffc107;
+	--text-dark: #333333;
+	--text-light: #666666;
+	--background-light: #f8f9fa;
+	--background-white: #ffffff;
+	--shadow: rgba(0, 0, 0, 0.1);
+	--border-radius: 10px;
+	--transition: all 0.3s ease;
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: 'Poppins', sans-serif;
+	color: var(--text-dark);
+	background-color: var(--background-light);
+	line-height: 1.6;
+}
+
+.app-container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+header {
+	text-align: center;
+	margin-bottom: 30px;
+	padding: 20px 0;
+}
+
+header h1 {
+	font-size: 2.5rem;
+	color: var(--text-dark);
+}
+
+header .bright {
+	color: var(--primary-color);
+}
+
+header .tagline {
+	color: var(--text-light);
+	font-weight: 300;
+}
+
+nav {
+	background-color: var(--background-white);
+	border-radius: var(--border-radius);
+	box-shadow: 0 2px 10px var(--shadow);
+	margin-bottom: 30px;
+}
+
+nav ul {
+	display: flex;
+	list-style: none;
+	justify-content: space-around;
+	padding: 0;
+}
+
+nav li {
+	flex: 1;
+	text-align: center;
+}
+
+nav a {
+	display: block;
+	padding: 15px 10px;
+	color: var(--text-dark);
+	text-decoration: none;
+	transition: var(--transition);
+	border-bottom: 3px solid transparent;
+}
+
+nav a i {
+	margin-right: 5px;
+}
+
+nav a.active,
+nav a:hover {
+	color: var(--primary-color);
+	border-bottom: 3px solid var(--primary-color);
+}
+
+.section {
+	display: none;
+	background-color: var(--background-white);
+	border-radius: var(--border-radius);
+	box-shadow: 0 2px 10px var(--shadow);
+	padding: 30px;
+	margin-bottom: 30px;
+}
+
+.section.active {
+	display: block;
+}
+
+.section-header {
+	margin-bottom: 20px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #eee;
+}
+
+.section-header h2 {
+	color: var(--primary-color);
+}
+
+/* Daily Motivation Styles */
+.motivation-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}
+
+.quote-card {
+	background-color: var(--background-light);
+	padding: 30px;
+	border-radius: var(--border-radius);
+	margin-bottom: 20px;
+	width: 100%;
+	min-height: 200px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.quote-text {
+	font-size: 1.5rem;
+	font-weight: 500;
+	margin-bottom: 20px;
+	line-height: 1.4;
+}
+
+.quote-author {
+	font-style: italic;
+	color: var(--text-light);
+}
+
+/* Weather Mood Styles */
+.weather-card {
+	background-color: var(--background-light);
+	padding: 20px;
+	border-radius: var(--border-radius);
+}
+
+.weather-info {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+#weather-icon {
+	font-size: 3rem;
+	margin-right: 20px;
+}
+
+#weather-details {
+	flex: 1;
+}
+
+#current-location {
+	font-weight: 600;
+	font-size: 1.2rem;
+}
+
+#current-weather {
+	color: var(--text-light);
+}
+
+#current-temp {
+	font-size: 1.8rem;
+	font-weight: 500;
+}
+
+.weather-mood,
+.weather-activities {
+	margin-top: 20px;
+	padding-top: 20px;
+	border-top: 1px solid #eee;
+}
+
+.weather-activities ul {
+	list-style-position: inside;
+	margin-top: 10px;
+}
+
+/* Mood Tracker Styles */
+.mood-content {
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+}
+
+.mood-input {
+	background-color: var(--background-light);
+	padding: 20px;
+	border-radius: var(--border-radius);
+}
+
+.mood-selector {
+	display: flex;
+	justify-content: space-between;
+	margin: 20px 0;
+}
+
+.mood-option {
+	text-align: center;
+	cursor: pointer;
+	transition: var(--transition);
+	padding: 10px;
+	border-radius: var(--border-radius);
+}
+
+.mood-option:hover,
+.mood-option.selected {
+	background-color: rgba(74, 143, 231, 0.1);
+}
+
+.mood-emoji {
+	font-size: 2rem;
+	margin-bottom: 5px;
+}
+
+.mood-note-container {
+	margin-top: 20px;
+}
+
+#mood-note {
+	width: 100%;
+	padding: 15px;
+	border: 1px solid #ddd;
+	border-radius: var(--border-radius);
+	margin-bottom: 15px;
+	resize: vertical;
+	min-height: 100px;
+}
+
+.mood-visualization {
+	background-color: var(--background-light);
+	padding: 20px;
+	border-radius: var(--border-radius);
+}
+
+.mood-heatmap {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	gap: 5px;
+	margin-top: 20px;
+}
+
+.mood-day {
+	width: 100%;
+	padding-top: 100%;
+	position: relative;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.mood-day-inner {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.8rem;
+}
+
+/* Gratitude Journal Styles */
+.gratitude-content {
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+}
+
+.gratitude-input {
+	background-color: var(--background-light);
+	padding: 20px;
+	border-radius: var(--border-radius);
+}
+
+#gratitude-entry {
+	width: 100%;
+	padding: 15px;
+	border: 1px solid #ddd;
+	border-radius: var(--border-radius);
+	margin: 15px 0;
+	resize: vertical;
+	min-height: 150px;
+}
+
+.gratitude-history {
+	background-color: var(--background-light);
+	padding: 20px;
+	border-radius: var(--border-radius);
+}
+
+.entries-container {
+	margin-top: 15px;
+}
+
+.gratitude-entry-card {
+	background-color: var(--background-white);
+	padding: 15px;
+	border-radius: var(--border-radius);
+	margin-bottom: 15px;
+	position: relative;
+}
+
+.entry-date {
+	color: var(--text-light);
+	font-size: 0.9rem;
+	margin-bottom: 10px;
+}
+
+.entry-content {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.entry-actions {
+	position: absolute;
+	right: 15px;
+	top: 15px;
+}
+
+.entry-actions button {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--text-light);
+	font-size: 1rem;
+	margin-left: 10px;
+}
+
+/* Common Elements */
+.primary-btn {
+	background-color: var(--primary-color);
+	color: white;
+	border: none;
+	padding: 12px 25px;
+	border-radius: 25px;
+	cursor: pointer;
+	font-weight: 500;
+	transition: var(--transition);
+	font-family: 'Poppins', sans-serif;
+}
+
+.primary-btn:hover {
+	background-color: #3a7fd7;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+	text-align: center;
+	color: var(--text-light);
+	padding: 20px 0;
+	font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+
+	.mood-content,
+	.gratitude-content {
+		flex-direction: row;
+	}
+
+	.mood-input,
+	.gratitude-input,
+	.mood-visualization,
+	.gratitude-history {
+		flex: 1;
+	}
+}
+
+@media (max-width: 767px) {
+	nav ul {
+		flex-direction: column;
+	}
+
+	nav a {
+		padding: 10px;
+		border-bottom: none;
+		border-left: 3px solid transparent;
+	}
+
+	nav a.active,
+	nav a:hover {
+		border-bottom: none;
+		border-left: 3px solid var(--primary-color);
+	}
+
+	.mood-selector {
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 10px;
+	}
+
+	.mood-option {
+		flex: 0 0 calc(33.333% - 10px);
+	}
+}
