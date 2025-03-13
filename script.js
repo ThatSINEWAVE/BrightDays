@@ -78,7 +78,6 @@ function showRandomQuote() {
 
 // Weather Mood Feature
 function initWeatherMood() {
-    // Get weather data based on user location
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             position => {
@@ -94,7 +93,6 @@ function initWeatherMood() {
         document.getElementById('current-location').textContent = "Geolocation is not supported by this browser";
     }
 
-    // Load weather mood suggestions
     loadWeatherMoodData();
 }
 
@@ -116,53 +114,20 @@ function fetchWeatherData(city, lat, lon) {
         .then(response => response.json())
         .then(data => {
             const timeseries = data.properties.timeseries;
-            const closestWeather = getClosestWeather(timeseries);
-            if (closestWeather) {
-                const weatherSymbol = closestWeather.data.next_1_hours?.summary?.symbol_code || "clear";
-                const temperature = closestWeather.data.instant.details.air_temperature;
-                updateWeatherUI(city, weatherSymbol, temperature);
-            } else {
-                console.error("No weather data available");
-            }
+            const currentTime = new Date();
+
+            let closestWeather = timeseries.reduce((prev, curr) => {
+                return Math.abs(new Date(curr.time) - currentTime) < Math.abs(new Date(prev.time) - currentTime) ? curr : prev;
+            });
+
+            const weatherDetails = closestWeather.data.instant.details;
+            const weatherSymbol = closestWeather.data.next_1_hours.summary.symbol_code;
+
+            updateWeatherUI(city, weatherSymbol, weatherDetails.air_temperature);
         })
         .catch(error => {
             console.error("Error fetching weather data:", error);
         });
-}
-
-function getClosestWeather(timeseries) {
-    const now = new Date();
-    return timeseries.reduce((closest, entry) => {
-        const entryTime = new Date(entry.time);
-        return Math.abs(entryTime - now) < Math.abs(new Date(closest.time) - now) ? entry : closest;
-    }, timeseries[0]);
-}
-
-function updateWeatherUI(location, weatherSymbol, temperature) {
-    document.getElementById('current-location').textContent = location;
-    document.getElementById('current-weather').textContent = weatherSymbol.replace(/_/g, ' ');
-    document.getElementById('current-temp').textContent = `${temperature}°C`;
-
-    const weatherIcon = document.getElementById('weather-icon');
-    const iconMapping = {
-        "clear": '<i class="fas fa-sun" style="color: #FFC107;"></i>',
-        "cloudy": '<i class="fas fa-cloud" style="color: #ADB5BD;"></i>',
-        "partly_cloudy": '<i class="fas fa-cloud-sun" style="color: #6C757D;"></i>',
-        "rain": '<i class="fas fa-cloud-rain" style="color: #4A8FE7;"></i>',
-        "snow": '<i class="fas fa-snowflake" style="color: #DEE2E6;"></i>'
-    };
-
-    weatherIcon.innerHTML = iconMapping[weatherSymbol] || iconMapping["clear"];
-    updateWeatherSuggestions(weatherSymbol);
-}
-
-function fetchWeatherData(city, lat, lon) {
-    // Replace with a real weather API call (e.g., OpenWeatherMap)
-    const demoWeatherTypes = ["sunny", "rainy", "cloudy", "snowy", "partly cloudy"];
-    const randomWeather = demoWeatherTypes[Math.floor(Math.random() * demoWeatherTypes.length)];
-    const randomTemp = Math.floor(Math.random() * 30) + 5; // Random temperature between 5-35°C
-
-    updateWeatherUI(city, randomWeather, randomTemp);
 }
 
 function loadWeatherMoodData() {
@@ -177,47 +142,35 @@ function loadWeatherMoodData() {
         });
 }
 
-function updateWeatherUI(location, weather, temperature) {
+function updateWeatherUI(location, weatherSymbol, temperature) {
     document.getElementById('current-location').textContent = location;
-    document.getElementById('current-weather').textContent = capitalizeFirstLetter(weather);
-    document.getElementById('current-temp').textContent = `${temperature}°C`;
+    document.getElementById('current-weather').textContent = capitalizeFirstLetter(weatherSymbol.replace('_', ' '));
+    document.getElementById('current-temp').textContent = `${temperature.toFixed(1)}°C`;
 
-    // Set weather icon
     const weatherIcon = document.getElementById('weather-icon');
-    switch (weather) {
-        case 'sunny':
-            weatherIcon.innerHTML = '<i class="fas fa-sun" style="color: #FFC107;"></i>';
-            break;
-        case 'rainy':
-            weatherIcon.innerHTML = '<i class="fas fa-cloud-rain" style="color: #4A8FE7;"></i>';
-            break;
-        case 'cloudy':
-            weatherIcon.innerHTML = '<i class="fas fa-cloud" style="color: #ADB5BD;"></i>';
-            break;
-        case 'snowy':
-            weatherIcon.innerHTML = '<i class="fas fa-snowflake" style="color: #DEE2E6;"></i>';
-            break;
-        case 'partly cloudy':
-            weatherIcon.innerHTML = '<i class="fas fa-cloud-sun" style="color: #6C757D;"></i>';
-            break;
-        default:
-            weatherIcon.innerHTML = '<i class="fas fa-sun" style="color: #FFC107;"></i>';
-    }
+    const weatherIcons = {
+        'clear_sky': '<i class="fas fa-sun" style="color: #FFC107;"></i>',
+        'partly_cloudy': '<i class="fas fa-cloud-sun" style="color: #6C757D;"></i>',
+        'cloudy': '<i class="fas fa-cloud" style="color: #ADB5BD;"></i>',
+        'rain': '<i class="fas fa-cloud-rain" style="color: #4A8FE7;"></i>',
+        'snow': '<i class="fas fa-snowflake" style="color: #DEE2E6;"></i>',
+        'thunderstorm': '<i class="fas fa-bolt" style="color: #FF5722;"></i>',
+        'fog': '<i class="fas fa-smog" style="color: #9E9E9E;"></i>'
+    };
 
-    // Update mood suggestions based on weather
-    updateWeatherSuggestions(weather);
+    weatherIcon.innerHTML = weatherIcons[weatherSymbol] || '<i class="fas fa-question-circle"></i>';
+
+    updateWeatherSuggestions(weatherSymbol);
 }
 
-function updateWeatherSuggestions(currentWeather = 'sunny') {
+function updateWeatherSuggestions(currentWeather = 'clear_sky') {
     if (Object.keys(weatherData).length === 0) return;
 
-    // Find matching weather mood suggestions
-    const weatherMood = weatherData.find(item => item.weather.toLowerCase() === currentWeather.toLowerCase());
+    const weatherMood = weatherData.find(item => item.weather.toLowerCase() === currentWeather.replace('_', ' '));
 
     if (weatherMood) {
         document.getElementById('mood-suggestion').textContent = weatherMood.mood;
 
-        // Update activities list
         const activitiesList = document.getElementById('activities-list');
         activitiesList.innerHTML = '';
 
