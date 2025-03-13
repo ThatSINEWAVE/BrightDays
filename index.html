@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrightDays - Your Personal Wellbeing Companion</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="site-data/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="site-data/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="site-data/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="site-data/favicon-16x16.png">
+    <link rel="manifest" href="site-data/site.webmanifest">
+  </head>
+  <body>
+    <div class="app-container">
+      <header>
+        <h1>
+          <span class="bright">Bright</span>Days
+        </h1>
+        <p class="tagline">Your personal wellbeing companion</p>
+      </header>
+      <nav>
+        <ul>
+          <li>
+            <a href="#motivation" class="active">
+              <i class="fas fa-sun"></i> Daily Motivation </a>
+          </li>
+          <li>
+            <a href="#weather">
+              <i class="fas fa-cloud-sun"></i> Weather Mood </a>
+          </li>
+          <li>
+            <a href="#mood-tracker">
+              <i class="fas fa-chart-line"></i> Mood Tracker </a>
+          </li>
+          <li>
+            <a href="#gratitude">
+              <i class="fas fa-heart"></i> Gratitude Journal </a>
+          </li>
+        </ul>
+      </nav>
+      <main>
+        <!-- Daily Motivation Section -->
+        <section id="motivation" class="section active">
+          <div class="section-header">
+            <h2>Daily Motivation</h2>
+          </div>
+          <div class="motivation-content">
+            <div class="quote-card">
+              <p id="daily-quote" class="quote-text"></p>
+              <p id="quote-author" class="quote-author"></p>
+            </div>
+            <button id="new-quote-btn" class="primary-btn">New Quote</button>
+          </div>
+        </section>
+        <!-- Weather Mood Section -->
+        <section id="weather" class="section">
+          <div class="section-header">
+            <h2>Weather Mood</h2>
+          </div>
+          <div class="weather-content">
+            <div class="weather-card">
+              <div class="weather-info">
+                <div id="weather-icon"></div>
+                <div id="weather-details">
+                  <p id="current-location">Loading location...</p>
+                  <p id="current-weather">Loading weather...</p>
+                  <p id="current-temp">--°C</p>
+                </div>
+              </div>
+              <div class="weather-mood">
+                <h3>Today's Mood Suggestion</h3>
+                <p id="mood-suggestion">Please allow location access for personalized suggestions.</p>
+              </div>
+              <div class="weather-activities">
+                <h3>Suggested Activities</h3>
+                <ul id="activities-list">
+                  <li>Loading activities...</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Mood Tracker Section -->
+        <section id="mood-tracker" class="section">
+          <div class="section-header">
+            <h2>Mood Tracker</h2>
+          </div>
+          <div class="mood-content">
+            <div class="mood-input">
+              <h3>How are you feeling today?</h3>
+              <div class="mood-selector">
+                <div class="mood-option" data-mood="great">
+                  <div class="mood-emoji">😀</div>
+                  <span>Great</span>
+                </div>
+                <div class="mood-option" data-mood="good">
+                  <div class="mood-emoji">🙂</div>
+                  <span>Good</span>
+                </div>
+                <div class="mood-option" data-mood="okay">
+                  <div class="mood-emoji">😐</div>
+                  <span>Okay</span>
+                </div>
+                <div class="mood-option" data-mood="down">
+                  <div class="mood-emoji">😔</div>
+                  <span>Down</span>
+                </div>
+                <div class="mood-option" data-mood="awful">
+                  <div class="mood-emoji">😞</div>
+                  <span>Awful</span>
+                </div>
+              </div>
+              <div class="mood-note-container">
+                <textarea id="mood-note" placeholder="Add a note about how you feel today (optional)"></textarea>
+                <button id="save-mood" class="primary-btn">Save Today's Mood</button>
+              </div>
+            </div>
+            <div class="mood-visualization">
+              <h3>Your Mood History</h3>
+              <div class="mood-chart-container">
+                <div id="mood-heatmap" class="mood-heatmap"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Gratitude Journal Section -->
+        <section id="gratitude" class="section">
+          <div class="section-header">
+            <h2>Gratitude Journal</h2>
+          </div>
+          <div class="gratitude-content">
+            <div class="gratitude-input">
+              <h3>What are you grateful for today?</h3>
+              <textarea id="gratitude-entry" placeholder="I am grateful for..."></textarea>
+              <button id="save-gratitude" class="primary-btn">Save Entry</button>
+            </div>
+            <div class="gratitude-history">
+              <h3>Your Gratitude Journey</h3>
+              <div id="gratitude-entries" class="entries-container"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer>
+        <p>&copy; 2025 BrightDays - MIT License</p>
+        <p>Made by ThatSINEWAVE</p>
+      </footer>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
