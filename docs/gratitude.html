@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gratitude Journal - BrightDays</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="site-data/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="site-data/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="site-data/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="site-data/favicon-16x16.png">
+    <link rel="manifest" href="site-data/site.webmanifest">
+  </head>
+  <body>
+    <nav>
+      <ul></ul>
+    </nav>
+    <div class="container">
+      <div class="card">
+        <h1>Gratitude Journal</h1>
+        <textarea id="gratitude-entry" placeholder="What are you grateful for today?"></textarea>
+        <button onclick="saveEntry()">Save Entry</button>
+        <div id="past-entries"></div>
+      </div>
+    </div>
+    <footer>
+      <p>&copy; <span id="year"></span> BrightDays </p>
+    </footer>
+    <script src="js/app.js"></script>
+    <script src="js/gratitude.js"></script>
+  </body>
+</html>
