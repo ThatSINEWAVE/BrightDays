@@ -170,8 +170,20 @@
             </div>
             <div class="mood-visualization">
               <h3>Your Mood History</h3>
-              <div class="mood-chart-container">
+              <div class="mood-heatmap-container">
                 <div id="mood-heatmap" class="mood-heatmap"></div>
+              </div>
+              <div class="mood-legend">
+                <span class="legend-item">
+                  <span class="legend-color" style="background-color: #4CAF50;"></span>Great </span>
+                <span class="legend-item">
+                  <span class="legend-color" style="background-color: #8BC34A;"></span>Good </span>
+                <span class="legend-item">
+                  <span class="legend-color" style="background-color: #FFC107;"></span>Okay </span>
+                <span class="legend-item">
+                  <span class="legend-color" style="background-color: #FF9800;"></span>Down </span>
+                <span class="legend-item">
+                  <span class="legend-color" style="background-color: #F44336;"></span>Awful </span>
               </div>
             </div>
           </div>
@@ -186,7 +198,8 @@
               <h3>What are you grateful for today?</h3>
               <div class="gratitude-prompt">
                 <p id="gratitude-prompt-text">Taking a moment to reflect on the good things in life can boost your mood and overall wellbeing.</p>
-                <button id="new-prompt" class="secondary-btn"><i class="fas fa-sync-alt"></i> New Prompt</button>
+                <button id="new-prompt" class="secondary-btn">
+                  <i class="fas fa-sync-alt"></i> New Prompt </button>
               </div>
               <textarea id="gratitude-entry" placeholder="I am grateful for..."></textarea>
               <div class="gratitude-actions">

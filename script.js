@@ -645,7 +645,7 @@ function initMoodTracker() {
     const saveMoodBtn = document.getElementById('save-mood');
     saveMoodBtn.addEventListener('click', () => {
         if (!selectedMood) {
-            alert('Please select a mood first');
+            showNotification('Please select a mood first', 'error');
             return;
         }
 
@@ -685,7 +685,7 @@ function initMoodTracker() {
         document.getElementById('mood-note').value = '';
         selectedMood = null;
 
-        alert('Mood saved successfully!');
+        showNotification('Mood saved successfully!', 'success');
     });
 
     // Initialize mood heatmap
@@ -1062,7 +1062,9 @@ function editGratitudeEntry(id) {
     }
 
     // Scroll to input area
-    document.getElementById('gratitude').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('gratitude').scrollIntoView({
+        behavior: 'smooth'
+    });
 
     // Focus on textarea
     textarea.focus();
