@@ -299,46 +299,75 @@ function initWeatherMood() {
                 console.error("Error getting location", error);
                 document.getElementById('current-location').textContent = "Location access denied";
                 document.getElementById('mood-suggestion').textContent = "Please enable location services for personalized suggestions.";
+                showWeatherError();
             }
         );
     } else {
         document.getElementById('current-location').textContent = "Geolocation is not supported by this browser";
+        showWeatherError();
     }
 
     loadWeatherMoodData();
 }
 
+function showWeatherError() {
+    // Set default values for weather details when location is not available
+    document.getElementById('weather-icon').innerHTML = '<i class="fas fa-question-circle" style="color: #ADB5BD;"></i>';
+    document.getElementById('current-weather').textContent = "Weather unavailable";
+    document.getElementById('current-temp').textContent = "--°C";
+    document.getElementById('wind-speed').textContent = "-- m/s";
+    document.getElementById('humidity').textContent = "--%";
+    document.getElementById('pressure').textContent = "-- hPa";
+    document.getElementById('cloud-cover').textContent = "--%";
+
+    // Show error message in forecast
+    document.getElementById('forecast-container').innerHTML = '<div class="forecast-item">Weather forecast unavailable</div>';
+}
+
 function getWeather(lat, lon) {
+    // First, get the location name
     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
         .then(response => response.json())
         .then(data => {
-            const city = data.address.city || data.address.town || data.address.village || "Unknown Location";
-            fetchWeatherData(city, lat, lon);
+            const city = data.address.city || data.address.town || data.address.village || data.address.county || "Unknown Location";
+            document.getElementById('current-location').textContent = city;
+
+            // Then fetch weather data
+            fetchWeatherData(lat, lon);
         })
         .catch(error => {
             console.error("Error retrieving city name:", error);
-            fetchWeatherData("Your Location", lat, lon);
+            document.getElementById('current-location').textContent = "Your Location";
+            fetchWeatherData(lat, lon);
         });
 }
 
-function fetchWeatherData(city, lat, lon) {
+function fetchWeatherData(lat, lon) {
     fetch(`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`)
         .then(response => response.json())
         .then(data => {
             const timeseries = data.properties.timeseries;
             const currentTime = new Date();
 
+            // Find current weather data
             let closestWeather = timeseries.reduce((prev, curr) => {
                 return Math.abs(new Date(curr.time) - currentTime) < Math.abs(new Date(prev.time) - currentTime) ? curr : prev;
             });
 
-            const weatherDetails = closestWeather.data.instant.details;
-            const weatherSymbol = closestWeather.data.next_1_hours.summary.symbol_code;
+            const currentDetails = closestWeather.data.instant.details;
+            const currentSymbol = closestWeather.data.next_1_hours?.summary.symbol_code ||
+                closestWeather.data.next_6_hours?.summary.symbol_code ||
+                'clear_sky';
 
-            updateWeatherUI(city, weatherSymbol, weatherDetails.air_temperature);
+            // Update UI with current weather
+            updateWeatherUI(currentSymbol, currentDetails);
+
+            // Generate forecast for the next 24 hours (6 entries at 4-hour intervals)
+            updateForecast(timeseries.slice(0, 24));
         })
         .catch(error => {
             console.error("Error fetching weather data:", error);
+            showWeatherError();
         });
 }
 
@@ -351,34 +380,140 @@ function loadWeatherMoodData() {
         })
         .catch(error => {
             console.error('Error loading weather moods:', error);
+            // Show generic suggestions if weather moods can't be loaded
+            showDefaultMoodSuggestions();
         });
 }
 
-function updateWeatherUI(location, weatherSymbol, temperature) {
-    document.getElementById('current-location').textContent = location;
-    document.getElementById('current-weather').textContent = capitalizeFirstLetter(weatherSymbol.replace('_', ' '));
-    document.getElementById('current-temp').textContent = `${temperature.toFixed(1)}°C`;
+function updateWeatherUI(weatherSymbol, details) {
+    // Update main weather display
+    document.getElementById('current-weather').textContent = formatWeatherDescription(weatherSymbol);
+    document.getElementById('current-temp').textContent = `${details.air_temperature.toFixed(1)}°C`;
 
+    // Update additional weather details
+    document.getElementById('wind-speed').textContent = `${details.wind_speed.toFixed(1)} m/s`;
+    document.getElementById('humidity').textContent = `${details.relative_humidity.toFixed(0)}%`;
+    document.getElementById('pressure').textContent = `${details.air_pressure_at_sea_level.toFixed(0)} hPa`;
+    document.getElementById('cloud-cover').textContent = `${details.cloud_area_fraction.toFixed(0)}%`;
+
+    // Update weather icon
     const weatherIcon = document.getElementById('weather-icon');
-    const weatherIcons = {
-        'clear_sky': '<i class="fas fa-sun" style="color: #FFC107;"></i>',
-        'partly_cloudy': '<i class="fas fa-cloud-sun" style="color: #6C757D;"></i>',
-        'cloudy': '<i class="fas fa-cloud" style="color: #ADB5BD;"></i>',
-        'rain': '<i class="fas fa-cloud-rain" style="color: #4A8FE7;"></i>',
-        'snow': '<i class="fas fa-snowflake" style="color: #DEE2E6;"></i>',
-        'thunderstorm': '<i class="fas fa-bolt" style="color: #FF5722;"></i>',
-        'fog': '<i class="fas fa-smog" style="color: #9E9E9E;"></i>'
-    };
+    weatherIcon.innerHTML = getWeatherIcon(weatherSymbol);
 
-    weatherIcon.innerHTML = weatherIcons[weatherSymbol] || '<i class="fas fa-question-circle"></i>';
-
+    // Update mood and activity suggestions
     updateWeatherSuggestions(weatherSymbol);
 }
 
-function updateWeatherSuggestions(currentWeather = 'clear_sky') {
-    if (Object.keys(weatherData).length === 0) return;
+function getWeatherIcon(weatherSymbol) {
+    // Expanded icon set
+    const weatherIcons = {
+        'clear_sky_day': '<i class="fas fa-sun" style="color: #FFC107;"></i>',
+        'clear_sky_night': '<i class="fas fa-moon" style="color: #6C757D;"></i>',
+        'clear_sky': '<i class="fas fa-sun" style="color: #FFC107;"></i>',
+        'partly_cloudy_day': '<i class="fas fa-cloud-sun" style="color: #6C757D;"></i>',
+        'partly_cloudy_night': '<i class="fas fa-cloud-moon" style="color: #6C757D;"></i>',
+        'partly_cloudy': '<i class="fas fa-cloud-sun" style="color: #6C757D;"></i>',
+        'cloudy': '<i class="fas fa-cloud" style="color: #ADB5BD;"></i>',
+        'fair_day': '<i class="fas fa-sun" style="color: #FFC107;"></i>',
+        'fair_night': '<i class="fas fa-moon" style="color: #6C757D;"></i>',
+        'fair': '<i class="fas fa-sun" style="color: #FFC107;"></i>',
+        'fog': '<i class="fas fa-smog" style="color: #9E9E9E;"></i>',
+        'rain': '<i class="fas fa-cloud-rain" style="color: #4A8FE7;"></i>',
+        'heavy_rain': '<i class="fas fa-cloud-showers-heavy" style="color: #4A8FE7;"></i>',
+        'snow': '<i class="fas fa-snowflake" style="color: #DEE2E6;"></i>',
+        'sleet': '<i class="fas fa-cloud-meatball" style="color: #ADB5BD;"></i>',
+        'thunder': '<i class="fas fa-bolt" style="color: #FF5722;"></i>',
+        'thunderstorm': '<i class="fas fa-bolt" style="color: #FF5722;"></i>',
+        'drizzle': '<i class="fas fa-cloud-rain" style="color: #6C757D;"></i>',
+        'hail': '<i class="fas fa-cloud-meatball" style="color: #DEE2E6;"></i>',
+    };
 
-    const weatherMood = weatherData.find(item => item.weather.toLowerCase() === currentWeather.replace('_', ' '));
+    // Parse the weather symbol to handle day/night variants
+    const baseSymbol = weatherSymbol.split('_').slice(0, -1).join('_') || weatherSymbol;
+
+    return weatherIcons[weatherSymbol] || weatherIcons[baseSymbol] || '<i class="fas fa-question-circle" style="color: #6C757D;"></i>';
+}
+
+function formatWeatherDescription(symbolCode) {
+    // Remove day/night suffix and convert to readable format
+    let description = symbolCode.replace(/_day|_night/g, '').replace(/_/g, ' ');
+    return capitalizeFirstLetter(description);
+}
+
+function updateForecast(timeseries) {
+    const forecastContainer = document.getElementById('forecast-container');
+    forecastContainer.innerHTML = ''; // Clear existing forecast
+
+    // Get forecast at 4-hour intervals for the next 24 hours
+    const forecastIntervals = [0, 4, 8, 12, 16, 20];
+
+    forecastIntervals.forEach(intervalIndex => {
+        if (timeseries[intervalIndex]) {
+            const forecastTime = new Date(timeseries[intervalIndex].time);
+            const symbol = timeseries[intervalIndex].data.next_1_hours?.summary.symbol_code ||
+                timeseries[intervalIndex].data.next_6_hours?.summary.symbol_code ||
+                'clear_sky';
+            const temp = timeseries[intervalIndex].data.instant.details.air_temperature;
+
+            const forecastItem = document.createElement('div');
+            forecastItem.classList.add('forecast-item');
+
+            forecastItem.innerHTML = `
+                <div class="time">${formatForecastTime(forecastTime)}</div>
+                <div class="forecast-icon">${getWeatherIcon(symbol)}</div>
+                <div class="forecast-temp">${temp.toFixed(1)}°C</div>
+            `;
+
+            forecastContainer.appendChild(forecastItem);
+        }
+    });
+}
+
+function formatForecastTime(date) {
+    // Format time as "HH:00" or show "Now" for current hour
+    const now = new Date();
+
+    if (date.getDate() === now.getDate() && date.getHours() === now.getHours()) {
+        return 'Now';
+    }
+
+    return date.getHours().toString().padStart(2, '0') + ':00';
+}
+
+function showDefaultMoodSuggestions() {
+    document.getElementById('mood-suggestion').textContent = "Take a moment to appreciate the day, regardless of the weather.";
+
+    const activitiesList = document.getElementById('activities-list');
+    activitiesList.innerHTML = '';
+
+    const defaultActivities = [
+        "Practice mindfulness for 10 minutes",
+        "Stay hydrated throughout the day",
+        "Connect with a friend or family member",
+        "Read something that inspires you",
+        "Take short breaks during work to stretch"
+    ];
+
+    defaultActivities.forEach(activity => {
+        const li = document.createElement('li');
+        li.textContent = activity;
+        activitiesList.appendChild(li);
+    });
+}
+
+function updateWeatherSuggestions(currentWeather = 'clear_sky') {
+    if (Object.keys(weatherData).length === 0) {
+        showDefaultMoodSuggestions();
+        return;
+    }
+
+    // Normalize the weather symbol by removing day/night suffix
+    const normalizedWeather = currentWeather.replace(/_day|_night/g, '');
+
+    // Find matching weather mood or use default
+    const weatherMood = weatherData.find(item =>
+            item.weather.toLowerCase() === normalizedWeather.replace(/_/g, ' ')) ||
+        weatherData.find(item => item.weather.toLowerCase() === 'default');
 
     if (weatherMood) {
         document.getElementById('mood-suggestion').textContent = weatherMood.mood;
@@ -391,6 +526,8 @@ function updateWeatherSuggestions(currentWeather = 'clear_sky') {
             li.textContent = activity;
             activitiesList.appendChild(li);
         });
+    } else {
+        showDefaultMoodSuggestions();
     }
 }
 

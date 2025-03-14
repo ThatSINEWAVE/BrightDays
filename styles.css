@@ -317,21 +317,40 @@ nav a:hover {
 }
 
 /* Weather Mood Styles */
+.weather-content {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
 .weather-card {
 	background-color: var(--background-light);
-	padding: 20px;
+	padding: 25px;
 	border-radius: var(--border-radius);
+	box-shadow: 0 3px 10px var(--shadow);
+	transition: var(--transition);
 }
 
 .weather-info {
 	display: flex;
 	align-items: center;
 	margin-bottom: 20px;
+	padding-bottom: 15px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 #weather-icon {
-	font-size: 3rem;
+	font-size: 3.5rem;
 	margin-right: 20px;
+	text-align: center;
+	width: 80px;
+	height: 80px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: rgba(255, 255, 255, 0.7);
+	border-radius: 50%;
+	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
 #weather-details {
@@ -340,15 +359,17 @@ nav a:hover {
 
 #current-location {
 	font-weight: 600;
-	font-size: 1.2rem;
+	font-size: 1.3rem;
+	margin-bottom: 5px;
 }
 
 #current-weather {
 	color: var(--text-light);
+	margin-bottom: 5px;
 }
 
 #current-temp {
-	font-size: 1.8rem;
+	font-size: 2rem;
 	font-weight: 500;
 }
 
@@ -362,6 +383,145 @@ nav a:hover {
 .weather-activities ul {
 	list-style-position: inside;
 	margin-top: 10px;
+}
+
+/* Weather Details Grid */
+.weather-details-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 20px;
+	margin-bottom: 25px;
+	padding-bottom: 20px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+@media (min-width: 768px) {
+	.weather-details-grid {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+.weather-detail-item {
+	background-color: var(--background-white);
+	padding: 15px;
+	border-radius: var(--border-radius);
+	text-align: center;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+	transition: var(--transition);
+}
+
+.weather-detail-item:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.weather-detail-item i {
+	font-size: 1.5rem;
+	color: var(--primary-color);
+	margin-bottom: 5px;
+}
+
+.weather-detail-item span {
+	display: block;
+	font-size: 0.9rem;
+	color: var(--text-light);
+	margin-bottom: 5px;
+}
+
+.weather-detail-item p {
+	font-weight: 500;
+	font-size: 1.1rem;
+}
+
+/* Weather Forecast */
+.weather-forecast {
+	margin-bottom: 25px;
+	padding-bottom: 20px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.weather-forecast h3 {
+	margin-bottom: 15px;
+}
+
+.forecast-items {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+	gap: 10px;
+	overflow-x: auto;
+	padding-bottom: 5px;
+}
+
+.forecast-item {
+	background-color: var(--background-white);
+	padding: 12px;
+	border-radius: var(--border-radius);
+	text-align: center;
+	min-width: 100px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+	transition: var(--transition);
+}
+
+.forecast-item:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.forecast-item .time {
+	font-size: 0.9rem;
+	color: var(--text-light);
+	margin-bottom: 5px;
+}
+
+.forecast-item .forecast-icon {
+	font-size: 1.5rem;
+	margin: 8px 0;
+	color: var(--primary-color);
+}
+
+.forecast-item .forecast-temp {
+	font-weight: 500;
+}
+
+.weather-mood,
+.weather-activities {
+	margin-top: 20px;
+	padding-top: 15px;
+	border-top: 1px solid #eee;
+}
+
+.weather-mood h3,
+.weather-activities h3 {
+	margin-bottom: 10px;
+	color: var(--primary-color);
+}
+
+#mood-suggestion {
+	background-color: var(--background-white);
+	padding: 15px;
+	border-radius: var(--border-radius);
+	border-left: 4px solid var(--primary-color);
+	margin-bottom: 15px;
+	font-style: italic;
+}
+
+.weather-activities ul {
+	list-style-type: none;
+	margin-top: 10px;
+}
+
+.weather-activities li {
+	padding: 10px 15px;
+	margin-bottom: 8px;
+	background-color: var(--background-white);
+	border-radius: var(--border-radius);
+	border-left: 4px solid var(--secondary-color);
+	transition: var(--transition);
+}
+
+.weather-activities li:hover {
+	transform: translateX(5px);
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Mood Tracker Styles */
