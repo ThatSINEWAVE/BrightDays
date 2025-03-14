@@ -116,6 +116,44 @@ nav a:hover {
 	flex-direction: column;
 	align-items: center;
 	text-align: center;
+	width: 100%;
+}
+
+.motivation-tabs {
+	display: flex;
+	margin-bottom: 20px;
+	width: 100%;
+	max-width: 500px;
+	border-radius: 25px;
+	overflow: hidden;
+	background-color: var(--background-light);
+	padding: 5px;
+}
+
+.motivation-tab {
+	flex: 1;
+	padding: 10px 15px;
+	border: none;
+	background: none;
+	cursor: pointer;
+	font-family: 'Poppins', sans-serif;
+	font-weight: 500;
+	transition: var(--transition);
+	border-radius: 20px;
+}
+
+.motivation-tab.active {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+.quote-section {
+	display: none;
+	width: 100%;
+}
+
+.quote-section.active {
+	display: block;
 }
 
 .quote-card {
@@ -128,6 +166,8 @@ nav a:hover {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	position: relative;
+	transition: var(--transition);
 }
 
 .quote-text {
@@ -140,6 +180,140 @@ nav a:hover {
 .quote-author {
 	font-style: italic;
 	color: var(--text-light);
+}
+
+.quote-category {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	background-color: var(--secondary-color);
+	color: var(--text-dark);
+	padding: 3px 10px;
+	border-radius: 15px;
+	font-size: 0.8rem;
+	display: none;
+}
+
+.quote-actions {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 15px;
+}
+
+.circular-btn {
+	width: 45px;
+	height: 45px;
+	border-radius: 50%;
+	border: none;
+	background-color: var(--background-light);
+	color: var(--text-dark);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: var(--transition);
+	font-size: 1.2rem;
+}
+
+.circular-btn:hover {
+	background-color: var(--primary-color);
+	color: white;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Favorites styles */
+.favorites-container {
+	width: 100%;
+}
+
+.favorite-quote-card {
+	background-color: var(--background-light);
+	padding: 20px;
+	border-radius: var(--border-radius);
+	margin-bottom: 15px;
+	text-align: left;
+	position: relative;
+	transition: var(--transition);
+}
+
+.favorite-quote-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.favorite-quote-card .quote-text {
+	font-size: 1.2rem;
+}
+
+.favorite-quote-card .quote-category {
+	position: static;
+	display: inline-block;
+	margin-top: 10px;
+}
+
+.favorite-quote-actions {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	display: flex;
+	gap: 10px;
+}
+
+.favorite-quote-actions button {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--text-light);
+	font-size: 1rem;
+	transition: var(--transition);
+}
+
+.favorite-quote-actions button:hover {
+	color: var(--primary-color);
+}
+
+.no-favorites {
+	color: var(--text-light);
+	font-style: italic;
+	padding: 20px;
+}
+
+/* Animation */
+.fade-in {
+	animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+/* Notification */
+.notification {
+	position: fixed;
+	bottom: 20px;
+	left: 50%;
+	transform: translateX(-50%) translateY(100px);
+	background-color: var(--primary-color);
+	color: white;
+	padding: 12px 25px;
+	border-radius: 25px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
+	transition: var(--transition);
+	opacity: 0;
+}
+
+.notification.show {
+	transform: translateX(-50%) translateY(0);
+	opacity: 1;
 }
 
 /* Weather Mood Styles */
@@ -368,19 +542,19 @@ footer {
 }
 
 .footer-link {
-  color: var(--primary-color);
-  text-decoration: none;
-  transition: var(--transition);
-  position: relative;
+	color: var(--primary-color);
+	text-decoration: none;
+	transition: var(--transition);
+	position: relative;
 }
 
 .footer-link:hover {
-  color: #3a7fd7;
-  text-decoration: underline;
+	color: #3a7fd7;
+	text-decoration: underline;
 }
 
 footer p {
-  margin: 5px 0;
+	margin: 5px 0;
 }
 
 /* Responsive Design */
