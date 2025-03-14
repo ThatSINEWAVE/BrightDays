@@ -610,69 +610,321 @@ nav a:hover {
 
 /* Gratitude Journal Styles */
 .gratitude-content {
-	display: flex;
-	flex-direction: column;
-	gap: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
 }
 
+/* Input Area Styles */
 .gratitude-input {
-	background-color: var(--background-light);
-	padding: 20px;
-	border-radius: var(--border-radius);
+    background-color: var(--background-light);
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.gratitude-prompt {
+    background-color: var(--background-white);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    margin: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid var(--accent-color);
+}
+
+#gratitude-prompt-text {
+    margin: 0;
+    flex: 1;
+    font-style: italic;
+    color: var(--text-dark);
+}
+
+#new-prompt {
+    margin-left: 15px;
+    padding: 8px 12px;
+    white-space: nowrap;
 }
 
 #gratitude-entry {
-	width: 100%;
-	padding: 15px;
-	border: 1px solid #ddd;
-	border-radius: var(--border-radius);
-	margin: 15px 0;
-	resize: vertical;
-	min-height: 150px;
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    margin: 15px 0;
+    resize: vertical;
+    min-height: 150px;
+    font-family: 'Poppins', sans-serif;
+    transition: border-color 0.3s;
 }
 
+#gratitude-entry:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
+}
+
+.gratitude-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.gratitude-tags {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.tag-label {
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.tag-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex: 1;
+    margin-left: 10px;
+}
+
+.gratitude-tag {
+    background-color: var(--background-white);
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    transition: all 0.3s;
+}
+
+.gratitude-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.gratitude-tag:hover {
+    background-color: #f0f0f0;
+}
+
+.gratitude-tag.selected {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* History Area Styles */
 .gratitude-history {
-	background-color: var(--background-light);
-	padding: 20px;
-	border-radius: var(--border-radius);
+    background-color: var(--background-light);
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.gratitude-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.gratitude-filter select {
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    border: 1px solid #ddd;
+    background-color: var(--background-white);
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+}
+
+.gratitude-stats {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--background-white);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 10px;
+}
+
+.stat-number {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-top: 5px;
 }
 
 .entries-container {
-	margin-top: 15px;
+    margin-top: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 5px;
 }
 
 .gratitude-entry-card {
-	background-color: var(--background-white);
-	padding: 15px;
-	border-radius: var(--border-radius);
-	margin-bottom: 15px;
-	position: relative;
+    background-color: var(--background-white);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 4px solid transparent;
+}
+
+.gratitude-entry-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
 }
 
 .entry-date {
-	color: var(--text-light);
-	font-size: 0.9rem;
-	margin-bottom: 10px;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.entry-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.entry-tag {
+    background-color: var(--background-light);
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    color: var(--text-dark);
 }
 
 .entry-content {
-	white-space: pre-wrap;
-	word-break: break-word;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin-bottom: 10px;
+    line-height: 1.5;
 }
 
 .entry-actions {
-	position: absolute;
-	right: 15px;
-	top: 15px;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .entry-actions button {
-	background: none;
-	border: none;
-	cursor: pointer;
-	color: var(--text-light);
-	font-size: 1rem;
-	margin-left: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-light);
+    font-size: 1rem;
+    padding: 5px;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+}
+
+.entry-actions button:hover {
+    color: var(--primary-color);
+}
+
+/* Entry highlight colors based on tags */
+.tag-people {
+    border-left-color: #FF6B6B;
+}
+
+.tag-experiences {
+    border-left-color: #4ECDC4;
+}
+
+.tag-things {
+    border-left-color: #FFD166;
+}
+
+.tag-personal {
+    border-left-color: #6A0572;
+}
+
+.tag-work {
+    border-left-color: #1A535C;
+}
+
+/* Improved scrollbar for entries container */
+.entries-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.entries-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.entries-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+.entries-container::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+/* Empty state styles */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-light);
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: var(--primary-color-light);
+}
+
+/* Secondary button style */
+.secondary-btn {
+    background-color: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 8px 16px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s;
+    min-width: 100px;
+    text-align: center;
+}
+
+.secondary-btn:hover {
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+    .gratitude-content {
+        flex-direction: row;
+    }
+
+    .gratitude-input, .gratitude-history {
+        flex: 1;
+    }
 }
 
 /* Common Elements */

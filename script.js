@@ -5,6 +5,24 @@ let moodData = [];
 let gratitudeData = [];
 let currentQuote = null;
 
+const gratitudePrompts = [
+    "What made you smile today?",
+    "What's something that went well recently?",
+    "Who has positively impacted your life lately?",
+    "What's a small pleasure you enjoyed today?",
+    "What's something you're looking forward to?",
+    "What's a challenge you've overcome recently?",
+    "What's a quality in yourself that you appreciate?",
+    "What's a recent experience that you treasure?",
+    "What's something in your surroundings you're grateful for?",
+    "Who has taught you something valuable recently?",
+    "What's a tool or resource that makes your life easier?",
+    "What's a moment of kindness you've witnessed or experienced?",
+    "What's something about your health you're thankful for?",
+    "What opportunity are you grateful for right now?",
+    "What's a mistake that taught you something valuable?"
+];
+
 // DOM Content Loaded Event
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize navigation
@@ -267,24 +285,94 @@ function fallbackShare(text) {
     showNotification('Quote copied to clipboard');
 }
 
-function showNotification(message) {
-    // Check if notification already exists
-    let notification = document.querySelector('.notification');
+function showNotification(message, type = 'info') {
+    // Create notification container if it doesn't exist
+    let notificationContainer = document.querySelector('.notification-container');
+    if (!notificationContainer) {
+        notificationContainer = document.createElement('div');
+        notificationContainer.className = 'notification-container';
+        document.body.appendChild(notificationContainer);
 
-    if (!notification) {
-        // Create notification element
-        notification = document.createElement('div');
-        notification.classList.add('notification');
-        document.body.appendChild(notification);
+        // Add CSS if not already in stylesheet
+        if (!document.getElementById('notification-styles')) {
+            const style = document.createElement('style');
+            style.id = 'notification-styles';
+            style.textContent = `
+                .notification-container {
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    z-index: 1000;
+                }
+                .notification {
+                    background-color: white;
+                    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+                    border-radius: var(--border-radius);
+                    padding: 15px 20px;
+                    margin-top: 10px;
+                    display: flex;
+                    align-items: center;
+                    animation: slide-in 0.3s ease-out;
+                    max-width: 300px;
+                }
+                .notification.success {
+                    border-left: 4px solid #4CAF50;
+                }
+                .notification.error {
+                    border-left: 4px solid #F44336;
+                }
+                .notification.info {
+                    border-left: 4px solid #2196F3;
+                }
+                .notification i {
+                    margin-right: 10px;
+                    font-size: 1.2rem;
+                }
+                .notification.success i {
+                    color: #4CAF50;
+                }
+                .notification.error i {
+                    color: #F44336;
+                }
+                .notification.info i {
+                    color: #2196F3;
+                }
+                @keyframes slide-in {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes fade-out {
+                    from { opacity: 1; }
+                    to { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
     }
 
-    // Set message and show notification
-    notification.textContent = message;
-    notification.classList.add('show');
+    // Create notification
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
 
-    // Hide notification after delay
+    // Icon based on type
+    let icon = 'info-circle';
+    if (type === 'success') icon = 'check-circle';
+    if (type === 'error') icon = 'exclamation-circle';
+
+    notification.innerHTML = `
+        <i class="fas fa-${icon}"></i>
+        <span>${message}</span>
+    `;
+
+    // Add to container
+    notificationContainer.appendChild(notification);
+
+    // Remove after 3 seconds
     setTimeout(() => {
-        notification.classList.remove('show');
+        notification.style.animation = 'fade-out 0.3s forwards';
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
     }, 3000);
 }
 
@@ -699,39 +787,107 @@ function initGratitudeJournal() {
     // Load saved gratitude entries
     loadGratitudeData();
 
-    // Handle saving new gratitude entry
-    const saveGratitudeBtn = document.getElementById('save-gratitude');
-    saveGratitudeBtn.addEventListener('click', () => {
-        const entry = document.getElementById('gratitude-entry').value.trim();
+    // Set random gratitude prompt
+    setRandomPrompt();
 
-        if (!entry) {
-            alert('Please write something you are grateful for');
-            return;
-        }
-
-        const newEntry = {
-            id: Date.now(),
-            date: new Date().toISOString(),
-            content: entry
-        };
-
-        // Add to data
-        gratitudeData.unshift(newEntry);
-
-        // Save to local storage
-        saveGratitudeData();
-
-        // Update UI
-        renderGratitudeEntries();
-
-        // Clear form
-        document.getElementById('gratitude-entry').value = '';
-
-        alert('Gratitude entry saved!');
-    });
+    // Set up event listeners
+    setupGratitudeEventListeners();
 
     // Initial render of gratitude entries
     renderGratitudeEntries();
+
+    // Update stats
+    updateGratitudeStats();
+}
+
+function setRandomPrompt() {
+    const promptText = document.getElementById('gratitude-prompt-text');
+    const randomIndex = Math.floor(Math.random() * gratitudePrompts.length);
+    promptText.textContent = gratitudePrompts[randomIndex];
+}
+
+function setupGratitudeEventListeners() {
+    // New prompt button
+    const newPromptBtn = document.getElementById('new-prompt');
+    newPromptBtn.addEventListener('click', setRandomPrompt);
+
+    // Tag selection
+    const gratitudeTags = document.querySelectorAll('.gratitude-tag');
+    gratitudeTags.forEach(tag => {
+        tag.addEventListener('click', () => {
+            tag.classList.toggle('selected');
+        });
+    });
+
+    // Save gratitude entry
+    const saveGratitudeBtn = document.getElementById('save-gratitude');
+    saveGratitudeBtn.addEventListener('click', saveGratitudeEntry);
+
+    // Filter entries
+    const filterSelect = document.getElementById('gratitude-filter');
+    filterSelect.addEventListener('change', () => {
+        renderGratitudeEntries(filterSelect.value);
+    });
+
+    // Ensure gratitude-buttons container exists
+    if (!document.querySelector('.gratitude-buttons')) {
+        // Create the buttons container
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.className = 'gratitude-buttons';
+
+        // Move the save button into this container
+        const saveButton = document.getElementById('save-gratitude');
+        if (saveButton) {
+            const parent = saveButton.parentNode;
+            parent.removeChild(saveButton);
+            buttonsContainer.appendChild(saveButton);
+            parent.appendChild(buttonsContainer);
+        }
+    }
+}
+
+function saveGratitudeEntry() {
+    const entryText = document.getElementById('gratitude-entry').value.trim();
+    if (!entryText) {
+        showGratitudeNotification('Please write something you are grateful for', 'error');
+        return;
+    }
+
+    // Get selected tags
+    const selectedTags = [];
+    document.querySelectorAll('.gratitude-tag.selected').forEach(tag => {
+        selectedTags.push(tag.dataset.tag);
+    });
+
+    // Create new entry
+    const newEntry = {
+        id: Date.now(),
+        date: new Date().toISOString(),
+        content: entryText,
+        tags: selectedTags
+    };
+
+    // Add to data
+    gratitudeData.unshift(newEntry);
+
+    // Save to local storage
+    saveGratitudeData();
+
+    // Update UI
+    renderGratitudeEntries();
+    updateGratitudeStats();
+
+    // Clear form
+    document.getElementById('gratitude-entry').value = '';
+    document.querySelectorAll('.gratitude-tag.selected').forEach(tag => {
+        tag.classList.remove('selected');
+    });
+
+    // Show success notification
+    showGratitudeNotification('Gratitude entry saved!', 'success');
+
+    // Set new random prompt
+    setRandomPrompt();
 }
 
 function loadGratitudeData() {
@@ -745,40 +901,105 @@ function saveGratitudeData() {
     localStorage.setItem('brightDaysGratitudeData', JSON.stringify(gratitudeData));
 }
 
-function renderGratitudeEntries() {
+function renderGratitudeEntries(filter = 'all') {
     const entriesContainer = document.getElementById('gratitude-entries');
     entriesContainer.innerHTML = '';
 
-    if (gratitudeData.length === 0) {
-        entriesContainer.innerHTML = '<p>No entries yet. Start your gratitude journey today!</p>';
+    // Filter entries based on selection
+    let filteredEntries = [...gratitudeData];
+
+    if (filter === 'today') {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        filteredEntries = filteredEntries.filter(entry => {
+            const entryDate = new Date(entry.date);
+            return entryDate >= today;
+        });
+    } else if (filter === 'week') {
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        filteredEntries = filteredEntries.filter(entry => {
+            const entryDate = new Date(entry.date);
+            return entryDate >= weekAgo;
+        });
+    } else if (filter === 'month') {
+        const monthAgo = new Date();
+        monthAgo.setMonth(monthAgo.getMonth() - 1);
+        filteredEntries = filteredEntries.filter(entry => {
+            const entryDate = new Date(entry.date);
+            return entryDate >= monthAgo;
+        });
+    } else if (['people', 'experiences', 'things', 'personal', 'work'].includes(filter)) {
+        filteredEntries = filteredEntries.filter(entry =>
+            entry.tags && entry.tags.includes(filter)
+        );
+    }
+
+    // Show empty state if no entries
+    if (filteredEntries.length === 0) {
+        entriesContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-heart"></i>
+                <p>No entries yet. Start your gratitude journey today!</p>
+            </div>
+        `;
         return;
     }
 
-    gratitudeData.forEach(entry => {
-        const entryCard = document.createElement('div');
-        entryCard.classList.add('gratitude-entry-card');
-
+    // Render entries
+    filteredEntries.forEach(entry => {
         // Format date
         const entryDate = new Date(entry.date);
-        const formattedDate = entryDate.toLocaleDateString() + ' ' + entryDate.toLocaleTimeString([], {
+        const formattedDate = entryDate.toLocaleDateString(undefined, {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+        const formattedTime = entryDate.toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit'
         });
 
+        // Determine tag-based border color
+        let tagClass = '';
+        if (entry.tags && entry.tags.length > 0) {
+            tagClass = `tag-${entry.tags[0]}`;
+        }
+
+        const entryCard = document.createElement('div');
+        entryCard.classList.add('gratitude-entry-card', tagClass);
+
+        // Create entry HTML
         entryCard.innerHTML = `
-            <div class="entry-date">${formattedDate}</div>
+            <div class="entry-date">
+                <span>${formattedDate} at ${formattedTime}</span>
+            </div>
+            ${entry.tags && entry.tags.length > 0 ? `
+                <div class="entry-tags">
+                    ${entry.tags.map(tag => `<span class="entry-tag">${tag}</span>`).join('')}
+                </div>
+            ` : ''}
             <div class="entry-content">${entry.content}</div>
             <div class="entry-actions">
-                <button class="delete-entry" data-id="${entry.id}"><i class="fas fa-trash"></i></button>
+                <button class="edit-entry" data-id="${entry.id}" title="Edit entry">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="delete-entry" data-id="${entry.id}" title="Delete entry">
+                    <i class="fas fa-trash"></i>
+                </button>
             </div>
         `;
 
         entriesContainer.appendChild(entryCard);
 
-        // Add event listener for delete button
-        const deleteBtn = entryCard.querySelector('.delete-entry');
-        deleteBtn.addEventListener('click', () => {
+        // Add event listeners for entry actions
+        entryCard.querySelector('.delete-entry').addEventListener('click', () => {
             deleteGratitudeEntry(entry.id);
+        });
+
+        entryCard.querySelector('.edit-entry').addEventListener('click', () => {
+            editGratitudeEntry(entry.id);
         });
     });
 }
@@ -792,8 +1013,305 @@ function deleteGratitudeEntry(id) {
         saveGratitudeData();
 
         // Update UI
-        renderGratitudeEntries();
+        renderGratitudeEntries(document.getElementById('gratitude-filter').value);
+        updateGratitudeStats();
+
+        // Show notification
+        showGratitudeNotification('Entry deleted successfully', 'success');
     }
+}
+
+function editGratitudeEntry(id) {
+    const entry = gratitudeData.find(entry => entry.id === id);
+    if (!entry) return;
+
+    // Set textarea value
+    const textarea = document.getElementById('gratitude-entry');
+    textarea.value = entry.content;
+
+    // Select appropriate tags
+    document.querySelectorAll('.gratitude-tag').forEach(tag => {
+        if (entry.tags && entry.tags.includes(tag.dataset.tag)) {
+            tag.classList.add('selected');
+        } else {
+            tag.classList.remove('selected');
+        }
+    });
+
+    // Change save button to update
+    const saveButton = document.getElementById('save-gratitude');
+    saveButton.textContent = 'Update Entry';
+    saveButton.dataset.editId = id;
+
+    // Add cancel button if not exists
+    if (!document.getElementById('cancel-edit')) {
+        const cancelButton = document.createElement('button');
+        cancelButton.id = 'cancel-edit';
+        cancelButton.className = 'secondary-btn';
+        cancelButton.textContent = 'Cancel';
+        cancelButton.addEventListener('click', cancelEditGratitude);
+
+        // Add to the buttons container instead of directly to gratitude-actions
+        const buttonsContainer = document.querySelector('.gratitude-buttons');
+        if (buttonsContainer) {
+            buttonsContainer.appendChild(cancelButton);
+        } else {
+            // Fallback to old behavior if container doesn't exist
+            document.querySelector('.gratitude-actions').appendChild(cancelButton);
+        }
+    }
+
+    // Scroll to input area
+    document.getElementById('gratitude').scrollIntoView({ behavior: 'smooth' });
+
+    // Focus on textarea
+    textarea.focus();
+
+    // Update event listener
+    saveButton.removeEventListener('click', saveGratitudeEntry);
+    saveButton.addEventListener('click', () => {
+        updateGratitudeEntry(id);
+    });
+}
+
+function updateGratitudeEntry(id) {
+    const entry = gratitudeData.find(entry => entry.id === id);
+    if (!entry) return;
+
+    const entryText = document.getElementById('gratitude-entry').value.trim();
+    if (!entryText) {
+        showGratitudeNotification('Please write something you are grateful for', 'error');
+        return;
+    }
+
+    // Get selected tags
+    const selectedTags = [];
+    document.querySelectorAll('.gratitude-tag.selected').forEach(tag => {
+        selectedTags.push(tag.dataset.tag);
+    });
+
+    // Update entry
+    entry.content = entryText;
+    entry.tags = selectedTags;
+
+    // Save to local storage
+    saveGratitudeData();
+
+    // Reset form
+    resetGratitudeForm();
+
+    // Update UI
+    renderGratitudeEntries(document.getElementById('gratitude-filter').value);
+
+    // Show notification
+    showGratitudeNotification('Entry updated successfully', 'success');
+}
+
+function cancelEditGratitude() {
+    resetGratitudeForm();
+    showGratitudeNotification('Edit cancelled', 'info');
+}
+
+function resetGratitudeForm() {
+    // Clear textarea
+    document.getElementById('gratitude-entry').value = '';
+
+    // Clear tag selection
+    document.querySelectorAll('.gratitude-tag.selected').forEach(tag => {
+        tag.classList.remove('selected');
+    });
+
+    // Reset save button
+    const saveButton = document.getElementById('save-gratitude');
+    saveButton.textContent = 'Save Entry';
+    delete saveButton.dataset.editId;
+
+    // Remove event listener and add back the original
+    saveButton.removeEventListener('click', updateGratitudeEntry);
+    saveButton.addEventListener('click', saveGratitudeEntry);
+
+    // Remove cancel button
+    const cancelButton = document.getElementById('cancel-edit');
+    if (cancelButton) {
+        cancelButton.remove();
+    }
+}
+
+function updateGratitudeStats() {
+    // Total entries
+    document.getElementById('total-entries').textContent = gratitudeData.length;
+
+    // Current streak
+    const streak = calculateStreak();
+    document.getElementById('current-streak').textContent = streak;
+
+    // Monthly entries
+    const monthlyEntries = getMonthlyEntries();
+    document.getElementById('monthly-entries').textContent = monthlyEntries;
+}
+
+function calculateStreak() {
+    if (gratitudeData.length === 0) return 0;
+
+    let streak = 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Check if there's an entry today
+    const hasEntryToday = gratitudeData.some(entry => {
+        const entryDate = new Date(entry.date);
+        entryDate.setHours(0, 0, 0, 0);
+        return entryDate.getTime() === today.getTime();
+    });
+
+    if (!hasEntryToday) {
+        // Check if there was an entry yesterday
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        const hasEntryYesterday = gratitudeData.some(entry => {
+            const entryDate = new Date(entry.date);
+            entryDate.setHours(0, 0, 0, 0);
+            return entryDate.getTime() === yesterday.getTime();
+        });
+
+        if (!hasEntryYesterday) return 0;
+    }
+
+    // Sort entries by date
+    const sortedEntries = [...gratitudeData].sort((a, b) =>
+        new Date(b.date) - new Date(a.date)
+    );
+
+    // Get unique dates (one entry per day)
+    const uniqueDates = [];
+    sortedEntries.forEach(entry => {
+        const entryDate = new Date(entry.date);
+        entryDate.setHours(0, 0, 0, 0);
+
+        if (!uniqueDates.some(date => date.getTime() === entryDate.getTime())) {
+            uniqueDates.push(entryDate);
+        }
+    });
+
+    // Calculate streak
+    let currentDate = hasEntryToday ? today : new Date(today);
+    if (!hasEntryToday) currentDate.setDate(currentDate.getDate() - 1);
+
+    for (let i = 0; i < uniqueDates.length; i++) {
+        const expectedDate = new Date(currentDate);
+        expectedDate.setHours(0, 0, 0, 0);
+
+        if (uniqueDates[i].getTime() === expectedDate.getTime()) {
+            streak++;
+            currentDate.setDate(currentDate.getDate() - 1);
+        } else {
+            break;
+        }
+    }
+
+    return streak;
+}
+
+function getMonthlyEntries() {
+    const now = new Date();
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    return gratitudeData.filter(entry => {
+        const entryDate = new Date(entry.date);
+        return entryDate >= firstDayOfMonth;
+    }).length;
+}
+
+function showGratitudeNotification(message, type = 'info') {
+    // Create notification container if it doesn't exist
+    let notificationContainer = document.querySelector('.notification-container');
+    if (!notificationContainer) {
+        notificationContainer = document.createElement('div');
+        notificationContainer.className = 'notification-container';
+        document.body.appendChild(notificationContainer);
+
+        // Add CSS if not already in stylesheet
+        if (!document.getElementById('notification-styles')) {
+            const style = document.createElement('style');
+            style.id = 'notification-styles';
+            style.textContent = `
+                .notification-container {
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    z-index: 1000;
+                }
+                .notification {
+                    background-color: white;
+                    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+                    border-radius: var(--border-radius);
+                    padding: 15px 20px;
+                    margin-top: 10px;
+                    display: flex;
+                    align-items: center;
+                    animation: slide-in 0.3s ease-out;
+                    max-width: 300px;
+                }
+                .notification.success {
+                    border-left: 4px solid #4CAF50;
+                }
+                .notification.error {
+                    border-left: 4px solid #F44336;
+                }
+                .notification.info {
+                    border-left: 4px solid #2196F3;
+                }
+                .notification i {
+                    margin-right: 10px;
+                    font-size: 1.2rem;
+                }
+                .notification.success i {
+                    color: #4CAF50;
+                }
+                .notification.error i {
+                    color: #F44336;
+                }
+                .notification.info i {
+                    color: #2196F3;
+                }
+                @keyframes slide-in {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes fade-out {
+                    from { opacity: 1; }
+                    to { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
+    // Create notification
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+
+    // Icon based on type
+    let icon = 'info-circle';
+    if (type === 'success') icon = 'check-circle';
+    if (type === 'error') icon = 'exclamation-circle';
+
+    notification.innerHTML = `
+        <i class="fas fa-${icon}"></i>
+        <span>${message}</span>
+    `;
+
+    // Add to container
+    notificationContainer.appendChild(notification);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.animation = 'fade-out 0.3s forwards';
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }, 3000);
 }
 
 // Helper Functions

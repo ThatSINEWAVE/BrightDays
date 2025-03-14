@@ -184,12 +184,61 @@
           <div class="gratitude-content">
             <div class="gratitude-input">
               <h3>What are you grateful for today?</h3>
+              <div class="gratitude-prompt">
+                <p id="gratitude-prompt-text">Taking a moment to reflect on the good things in life can boost your mood and overall wellbeing.</p>
+                <button id="new-prompt" class="secondary-btn"><i class="fas fa-sync-alt"></i> New Prompt</button>
+              </div>
               <textarea id="gratitude-entry" placeholder="I am grateful for..."></textarea>
-              <button id="save-gratitude" class="primary-btn">Save Entry</button>
+              <div class="gratitude-actions">
+                <div class="gratitude-tags">
+                  <span class="tag-label">Tags:</span>
+                  <div class="tag-options">
+                    <span class="gratitude-tag" data-tag="people">People</span>
+                    <span class="gratitude-tag" data-tag="experiences">Experiences</span>
+                    <span class="gratitude-tag" data-tag="things">Things</span>
+                    <span class="gratitude-tag" data-tag="personal">Personal</span>
+                    <span class="gratitude-tag" data-tag="work">Work</span>
+                  </div>
+                </div>
+                <div class="gratitude-buttons">
+                  <button id="save-gratitude" class="primary-btn">Save Entry</button>
+                </div>
+              </div>
             </div>
             <div class="gratitude-history">
-              <h3>Your Gratitude Journey</h3>
-              <div id="gratitude-entries" class="entries-container"></div>
+              <div class="gratitude-history-header">
+                <h3>Your Gratitude Journey</h3>
+                <div class="gratitude-filter">
+                  <select id="gratitude-filter">
+                    <option value="all">All Entries</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="people">People</option>
+                    <option value="experiences">Experiences</option>
+                    <option value="things">Things</option>
+                    <option value="personal">Personal</option>
+                    <option value="work">Work</option>
+                  </select>
+                </div>
+              </div>
+              <div class="gratitude-stats">
+                <div class="stat-item">
+                  <span class="stat-number" id="total-entries">0</span>
+                  <span class="stat-label">Total Entries</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number" id="current-streak">0</span>
+                  <span class="stat-label">Day Streak</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number" id="monthly-entries">0</span>
+                  <span class="stat-label">This Month</span>
+                </div>
+              </div>
+              <div id="gratitude-entries" class="entries-container">
+                <!-- Entries will be rendered here -->
+              </div>
             </div>
           </div>
         </section>
